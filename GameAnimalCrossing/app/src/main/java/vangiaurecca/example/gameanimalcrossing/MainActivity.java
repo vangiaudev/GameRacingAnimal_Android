@@ -3,6 +3,7 @@ package vangiaurecca.example.gameanimalcrossing;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     ImageButton ibtnPlay;
     CheckBox cbOne, cbTwo, cbThree;
     SeekBar sbOne, sbTwo, sbThree;
+    SharedPreferences saveScore;
 
     int iScore = 1000;
     @Override
@@ -31,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
         actionBar.hide();
         addControls();
         disableSeekBar();
+
+        saveScore = getSharedPreferences("SaveScore", MODE_PRIVATE);
+        iScore = saveScore.getInt("score", 1000);
         txtScore.setText(iScore + "");
         addEvent();
     }
@@ -56,10 +61,12 @@ public class MainActivity extends AppCompatActivity {
     private void CalcScore(CheckBox cb){
         if(cb.isChecked()){
             iScore += 100;
+            SaveScorePlayed();
             Toast.makeText(MainActivity.this, "Congratulations !!! You WIN and + 100 score", Toast.LENGTH_LONG).show();
         }
         else{
             iScore -= 50;
+            SaveScorePlayed();
             Toast.makeText(MainActivity.this, "You LOSE and - 50 score", Toast.LENGTH_LONG).show();
         }
         txtScore.setText(iScore + "");
@@ -168,6 +175,10 @@ public class MainActivity extends AppCompatActivity {
         sbOne    = findViewById(R.id.sbOne);
         sbTwo    = findViewById(R.id.sbTwo);
         sbThree  = findViewById(R.id.sbThree);
-
+    }
+    private void SaveScorePlayed(){
+        SharedPreferences.Editor editor = saveScore.edit();
+        editor.putInt("score", iScore);
+        editor.apply();
     }
 }
